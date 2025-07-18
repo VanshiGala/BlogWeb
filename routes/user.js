@@ -37,9 +37,10 @@ router.post("/signup", async (req,res)=>{
     await User.create({ fullName, email, password });
     return res.redirect("/");
   } catch (err) {
-    return res.redirect("/signin",{
-      error: "Incorrect email or password!",
-    })
+   return res.status(400).render("signin", {
+  error: "Incorrect email or password!",
+  user: req.user,
+});
    
   }
 });

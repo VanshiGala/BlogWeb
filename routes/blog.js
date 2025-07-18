@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     cb(null,  path.resolve("./public/uploads/"))
   },
   filename: function (req, file, cb) {
-    const filename = `${Date.now()} - ${file.originalname} `;
+    const filename = `${Date.now()}-${file.originalname} `;
     cb(null, filename);
   }
 })
@@ -24,13 +24,6 @@ router.get("/add-new", (req,res)=>{
     })
 })
 
-// router.get("/:id", async (req,res)=>{
-//     const blog = await Blog.findById(req.params.id).populate("createdBy")
-//     return res.render('blog', {
-//       user:req.user,
-//       blog,
-//     })
-// })
 router.get("/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).populate("createdBy");
@@ -47,8 +40,9 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/comment/:blogId", async(req,res)=>{
- 
-
+if (!req.user) {
+    return res.status(401).send("Please login to continue");
+  }
   const comment = await Comment.create({
     content:req.body.content,
     blogId:req.params.blogId,
